@@ -33,7 +33,7 @@ SPEED = 5
 screen = pygame.display.set_mode((SCN_WDH, SCN_HGT), 0, 32)
 
 # Заголовок окна игрового поля:
-pygame.display.set_caption("Змейка")
+pygame.display.set_caption('Змейка')
 
 # Настройка времени:
 clock = pygame.time.Clock()
@@ -274,5 +274,5 @@ def main():
         clock.tick(SPEED)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
