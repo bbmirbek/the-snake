@@ -3,10 +3,10 @@ from random import choice, randint
 import pygame
 
 # Константы для размеров поля и сетки:
-SCN_WDH, SCN_HGT = 640, 480
+SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
 GRID_SIZE = 20
-GRID_WIDTH = SCN_WDH // GRID_SIZE
-GRID_HEIGHT = SCN_HGT // GRID_SIZE
+GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
+GRID_HEIGHT = SCREEN_HEIGHT // GRID_SIZE
 
 # Направления движения:
 UP = (0, -1)
@@ -30,7 +30,7 @@ SNAKE_COLOR = (0, 255, 0)
 SPEED = 5
 
 # Настройка игрового окна:
-screen = pygame.display.set_mode((SCN_WDH, SCN_HGT), 0, 32)
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
 
 # Заголовок окна игрового поля:
 pygame.display.set_caption('Змейка')
@@ -139,8 +139,8 @@ class Snake(GameObject):
             self.next_direction = None
 
         new_head_position = (
-            (self.positions[0][0] + self.direction[0] * GRID_SIZE) % SCN_WDH,
-            (self.positions[0][1] + self.direction[1] * GRID_SIZE) % SCN_HGT,
+            (self.positions[0][0] + self.direction[0] * GRID_SIZE) % SCREEN_WIDTH,
+            (self.positions[0][1] + self.direction[1] * GRID_SIZE) % SCREEN_HEIGHT,
         )
 
         # Добавление новой позиции головы в начало списка
@@ -201,7 +201,7 @@ def update_direction(self):
         self.next_direction = None
 
 
-def reset_game(snake, apple):
+def reset(snake, apple):
     """
     Сбрасывает состояние игры, возвращая змейку и яблоко в нач
     альное положение.
@@ -265,7 +265,7 @@ def main():
             snake.grow()
             apple.randomize_position()
         if snake.positions[0] in snake.positions[1:]:
-            reset_game(snake, apple)
+            reset(snake, apple)
         # Тут нужно вызвать методы отрисовки объектов.
         screen.fill(BOARD_BACKGROUND_COLOR)
         apple.draw()
