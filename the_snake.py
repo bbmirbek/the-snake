@@ -50,7 +50,7 @@ class GameObject:
         body_color (tuple): Цвет объекта.
     """
 
-    def __init__(self, position, body_color):
+    def __init__(self, position=None, body_color=None):
         self.position = position
         self.body_color = body_color
 
@@ -71,7 +71,7 @@ class Apple(GameObject):
         body_color (tuple): Цвет яблока.
     """
 
-    def __init__(self, position):
+    def __init__(self, position=None):
         super().__init__(position, APPLE_COLOR)
 
     def draw(self):
@@ -117,13 +117,25 @@ class Snake(GameObject):
         last (tuple): Последний сегмент змейки для затирания.
     """
 
-    def __init__(self, position):
+    def __init__(self, position=None):
         super().__init__(position, SNAKE_COLOR)
         self.positions = [position]
         self.direction = choice([UP, DOWN, LEFT, RIGHT])
         self.next_direction = None
         self.length = 1
         self.last = None  # Последний сегмент змейки для затирания
+
+    def get_head_position(self):
+        """
+        Возвращает текущую позицию головы змейки.
+
+        Args:
+            self (Snake): Экземпляр класса Snake, для которого нужно получить
+            позицию головы.
+        Returns:
+            tuple: Координаты головы змейки.
+        """
+        return self.positions[0]
 
     def move(self):
         """
@@ -185,39 +197,46 @@ class Snake(GameObject):
         """
         self.length += 1
 
+    def reset(self, apple):
+        """
+        Сбрасывает состояние змейки и яблока при столкновении змейки с самой собой.
 
-def update_direction(self):
-    """
-    Обновляет направление движения змейки на основе следующего направления.
-
-    Args:
-        self (Snake): Экземпляр класса Snake, для которого обновляется
-        направление.
-    Returns:
-        None
-    """
-    if self.next_direction:
-        self.direction = self.next_direction
+        Args:
+            self (Snake): Экземпляр класса Snake, который нужно сбросить.
+            apple (Apple): Экземпляр класса Apple, который нужно сбросить.
+        Returns:
+            None
+        """
+        self.positions = [(200, 200)]
+        self.direction = choice([UP, DOWN, LEFT, RIGHT])
         self.next_direction = None
+        self.length = 1
+        self.last = None
+        apple.randomize_position(self.positions)
 
+    def update_direction(self, new_direction):
+        """
+        Обновляет направление движения змейки, если новое направление
+        не противоположно текущему.
 
-def reset(snake, apple):
-    """
-    Сбрасывает состояние игры, возвращая змейку и яблоко в нач
-    альное положение.
-
-    Args:
-        snake (Snake): Экземпляр класса Snake, который нужно сбросить.
-        apple (Apple): Экземпляр класса Apple, который нужно сбросить.
-    Returns:
-        None
-    """
-    snake.positions = [(200, 200)]
-    snake.direction = choice([UP, DOWN, LEFT, RIGHT])
-    snake.next_direction = None
-    snake.length = 1
-    snake.last = None
-    apple.randomize_position()
+        Args:
+            self (Snake): Экземпляр класса Snake, для которого нужно обновить
+            направление.
+            new_direction (tuple): Новое направление движения змейки.
+        Returns:
+            None
+        """
+        if (
+            new_direction == UP
+            and self.direction != DOWN
+            or new_direction == DOWN
+            and self.direction != UP
+            or new_direction == LEFT
+            and self.direction != RIGHT
+            or new_direction == RIGHT
+            and self.direction != LEFT
+        ):
+            self.next_direction = new_direction
 
 
 def handle_keys(snake):
@@ -261,11 +280,11 @@ def main():
     while True:
         handle_keys(snake)
         snake.move()
-        if apple.position == snake.positions[0]:
+        if apple.position == snake.get_head_position():
             snake.grow()
             apple.randomize_position()
-        if snake.positions[0] in snake.positions[1:]:
-            reset(snake, apple)
+        if snake.get_head_position() in snake.positions[1:]:
+            snake.reset(apple)
         # Тут нужно вызвать методы отрисовки объектов.
         screen.fill(BOARD_BACKGROUND_COLOR)
         apple.draw()
