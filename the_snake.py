@@ -150,9 +150,12 @@ class Snake(GameObject):
             self.direction = self.next_direction
             self.next_direction = None
 
+        head_x, head_y = self.positions[0]
+        dir_x, dir_y = self.direction
+
         new_head_position = (
-            (self.positions[0][0] + self.direction[0] * GRID_SIZE) % SCREEN_WIDTH,
-            (self.positions[0][1] + self.direction[1] * GRID_SIZE) % SCREEN_HEIGHT,
+            (head_x + dir_x * GRID_SIZE) % SCREEN_WIDTH,
+            (head_y + dir_y * GRID_SIZE) % SCREEN_HEIGHT,
         )
 
         # Добавление новой позиции головы в начало списка
@@ -199,7 +202,8 @@ class Snake(GameObject):
 
     def reset(self, apple):
         """
-        Сбрасывает состояние змейки и яблока при столкновении змейки с самой собой.
+        Сбрасывает состояние змейки и яблока при столкновении змейки с
+        самой собой.
 
         Args:
             self (Snake): Экземпляр класса Snake, который нужно сбросить.
